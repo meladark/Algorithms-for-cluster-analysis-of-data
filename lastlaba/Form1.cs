@@ -46,14 +46,11 @@ namespace lastlaba
             return y;
         }
         
-       static List<List<int>> countsGlobal = new List<List<int>>();
+        static List<List<int>> countsGlobal = new List<List<int>>();
         static List<coord> main(List<coord> klaster, float[] X, float[] Y)
         {
-            countsGlobal.Clear();
-           
+            countsGlobal.Clear();          
             List<coord> Cor = new List<coord>();
-            //float[] X = { 85, 65, 62, 65, 69, 60, 43, 39, 62, 79, 62, 57, 56, 53, 63, 79, 58, 55, 65, 66, 61, 34, 77, 70, 51, 44, 70, 69, 65, 63, 61, 63, 51, 58, 55, 58, 60, 67, 58, 71, 82, 70, 78, 77, 81, 70, 75, 74, 64, 63, 58, 66, 62, 66, 66, 69, 49, 57, 26, 38, 39, 44, 41, 19, 50, 72, 70, 65, 51, 63 };
-           // float[] Y = { 68, 71, 73, 72, 68, 71, 82, 79, 80, 80, 73, 67, 76, 73, 75, 79, 75, 84, 88, 59, 80, 85, 71, 81, 82, 84, 61, 77, 78, 72, 76, 77, 80, 80, 85, 81, 79, 87, 80, 78, 78, 79, 79, 82, 79, 82, 69, 73, 59, 70, 70, 60, 62, 60, 60, 61, 62, 68, 61, 72, 73, 83, 86, 97, 87, 80, 88, 73, 83, 63 };
             float[,] W = new float[klaster.Count, X.Length];
             List<double> dist = new List<double>();
             for(int j = 0; j < klaster.Count; j++)
@@ -107,6 +104,7 @@ namespace lastlaba
         float[] YGlobal;
         private void button1_Click(object sender, EventArgs e)
         {
+            triger = false;
             button4.Enabled = true;
             klasterNew.Clear();
             klaster.Clear();
@@ -165,8 +163,8 @@ namespace lastlaba
                        
                 }
             }
-
             button1.Enabled = false;
+            button10.Enabled = true;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -211,6 +209,7 @@ namespace lastlaba
 
         private void button4_Click(object sender, EventArgs e)
         {
+            string[] okrug = {"Центральный", "Северный","Северо-восточный","Восточный","Юго-западный","Южный","Юго-западный","Западный","Северо-западный" };
             SaveFileDialog savefile = new SaveFileDialog();
             savefile.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             if (savefile.ShowDialog() == DialogResult.OK)
@@ -220,7 +219,7 @@ namespace lastlaba
                 {
                     for (int i = 0; i < countsGlobal.Count; i++)
                     {
-                        sw.WriteLine("Принадлежат {0} кластеру", i+1);
+                        sw.WriteLine("{0} округ", okrug[i]);
                         for (int j = 0; j < countsGlobal[i].Count; j++)
                         {
                             if (klasterNew[i].Equals(new coord(float.NaN, float.NaN)))
@@ -229,7 +228,7 @@ namespace lastlaba
                             }
                             else
                             {
-                                sw.WriteLine("X = {0} Y = {1} ", XGlobal[countsGlobal[i][j]], YGlobal[countsGlobal[i][j]]);
+                                sw.WriteLine("X = 37.{0} Y = 55.{1} ", XGlobal[countsGlobal[i][j]], YGlobal[countsGlobal[i][j]]);
                             }
 
                         }
@@ -262,7 +261,7 @@ namespace lastlaba
             }
         //    else
             {
-//button9_Click(sender, e);
+            //button9_Click(sender, e);
             }
         }
 
@@ -301,11 +300,11 @@ namespace lastlaba
                 Graphics g = pictureBox1.CreateGraphics();
                 for (int i = 0; i < pictureBox1.Width; i++)
                 {
-                    g.DrawLine(new Pen(Brushes.Black, 1), new PointF(Enlargement * i * 1 + 5 + bias_horizon, Enlargement * 0), new PointF(Enlargement * i * 1 + 5 + bias_horizon, Enlargement * pictureBox1.Height));
+                    g.DrawLine(new Pen(Brushes.Black, 1), new PointF(Enlargement * i + 5 , Enlargement * 0), new PointF(Enlargement * i + 5, pictureBox1.Height));
                 }
                 for (int i = 0; i < pictureBox1.Height; i++)
                 {
-                    g.DrawLine(new Pen(Brushes.Black, 1), new PointF(0, Enlargement * i * 1 + 5 + bias_vertical), new PointF(pictureBox1.Width, Enlargement * i * 1 + 5 + bias_vertical));
+                    g.DrawLine(new Pen(Brushes.Black, 1), new PointF(0, Enlargement * i + 5), new PointF(pictureBox1.Width, Enlargement * i + 5));
 
                 }
                 triger = true;
@@ -316,6 +315,32 @@ namespace lastlaba
                 button1_Click(sender, e);
             }
            
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            string output="";
+            string[] okrug = { "Центральный", "Северный", "Северо-восточный", "Восточный", "Юго-западный", "Южный", "Юго-западный", "Западный", "Северо-западный" };
+                {
+                    for (int i = 0; i < countsGlobal.Count; i++)
+                    {
+                        output=output + "округ "+okrug[i]+"\n";
+                        for (int j = 0; j < countsGlobal[i].Count; j++)
+                        {
+                            if (klasterNew[i].Equals(new coord(float.NaN, float.NaN)))
+                            {
+
+                            }
+                            else
+                            {
+                                output = output +"|"+ (j+1) + ") X = 37." + XGlobal[countsGlobal[i][j]] + " Y = 55." + YGlobal[countsGlobal[i][j]]+" ";        
+                            }
+                        }
+                    output = output + "\n";
+                    }
+
+                }          
+            MessageBox.Show(output);
         }
     }
 }
