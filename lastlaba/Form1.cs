@@ -102,39 +102,58 @@ namespace lastlaba
         List<coord> klaster = new List<coord>();
         float[] XGlobal;
         float[] YGlobal;
+        float Chance_of_hitting = 0;
+        float[] error;
         private void button1_Click(object sender, EventArgs e)
         {
+            List<string> okrug = new List<string>();
+            string path = @"C:\Users\miked\Desktop\Колледжи.csv";
+            string[] readline = File.ReadAllLines(path);          
             triger = false;
             button4.Enabled = true;
             klasterNew.Clear();
             klaster.Clear();
             Graphics g = pictureBox1.CreateGraphics();
             g.FillRectangle(Brushes.White, new Rectangle(0, 0, pictureBox1.Width, pictureBox1.Height));
-            float[] X = {85,65,62,65,69,60,43,39,62,79,62,57,56,53,63,79,58,55,65,66,61,34,77,70,51,44,70,69,65,63,61,63,51,58,55,58,60,67,58,71,82,70,78,77,81,70,75,74,64,63,58,66,62,66,66,69,49,57,26,38,39,44,41,19,50,72,70,65,51,63};
-            float[] Y = {68,71,73,72,68,71,82,79,80,80,73,67,76,73,75,79,75,84,88,59,80,85,71,81,82,84,61,77,78,72,76,77,80,80,85,81,79,87,80,78,78,79,79,82,79,82,69,73,59,70,70,60,62,60,60,61,62,68,61,72,73,83,86,97,87,80,88,73,83,63};           
-          
-          //  float[] X = { 9, 32, 50, 51, 83, 31, 48, 85, 10, 30, 89, 37, 10, 5, 62, 35, 99, 62, 3, 68, 59, 36, 92, 82, 87, 80, 42, 74, 20, 84, 32, 61, 97, 7, 41, 56, 59, 98, 80, 64, 49, 48, 67, 98, 81, 93, 68, 33, 5, 96 };
-            XGlobal = X;
-           // float[] Y = { 31, 75, 6, 93, 80, 53, 33, 16, 94, 0, 35, 5, 96, 30, 25, 51, 20, 9, 26, 29, 69, 72, 69, 89, 7, 29, 83, 41, 96, 48, 55, 99, 81, 75, 55, 82, 32, 22, 29, 52, 44, 91, 10, 17, 98, 46, 16, 79, 32, 73 };
-            YGlobal = Y;
-            for(int i = 0; i < X.Length; i++)
+            List<float> X = new List<float>();
+            List<float> Y = new List<float>();
+            for (int i = 1; i < readline.Count(); i++)
+            {              
+                for (int j = 0; j < 3; j++)
+                {
+                    readline[i] = readline[i].Substring(readline[i].IndexOf(';')+1);
+                }
+                    readline[i] = readline[i].Substring(readline[i].IndexOf('"'));
+                    readline[i] = readline[i].Substring(1);
+                    okrug.Add(readline[i].Remove(readline[i].IndexOf('"')));
+                readline[i] = readline[i].Substring(readline[i].IndexOf("37,"));
+                X.Add((float.Parse(readline[i].Remove(readline[i].IndexOf('"'))) - 37)*100);
+                readline[i] = readline[i].Substring(readline[i].IndexOf(';') + 2);
+                Y.Add((float.Parse(readline[i].Remove(readline[i].IndexOf('"'))) - 55) * 100);
+            }
+            XGlobal = new float[readline.Count() - 1];
+            YGlobal = new float[readline.Count() - 1];
+            X.CopyTo(XGlobal);
+            Y.CopyTo(YGlobal);
+            for(int i = 0; i < XGlobal.Length; i++)
             {
-                g.DrawEllipse(Pens.Black, Enlargement * X[i]+bias_horizon, Enlargement * Y[i]+bias_vertical, width_height, width_height);
+                g.DrawEllipse(Pens.Black, Enlargement * XGlobal[i]+bias_horizon, Enlargement * YGlobal[i]+bias_vertical, width_height, width_height);
             }           
-            klaster.Add(new coord(66, 73));//центральный 55.737036, 37.662131
-            klaster.Add(new coord(56, 81));//Северный 55.814916, 37.565703
-            klaster.Add(new coord(63, 77));//северо-восточный 55.776371, 37.633725
-            klaster.Add(new coord(71, 79));//восточный 55.796901, 37.710262
-            klaster.Add(new coord(71, 75));//юго-восточный 55.754081, 37.715454
-            klaster.Add(new coord(66, 71));//южный 55.710246, 37.665580
-            klaster.Add(new coord(57, 66));//юго-западный 55.662382, 37.578244
-            klaster.Add(new coord(44, 72));//западный 55.727203, 37.443237
-            klaster.Add(new coord(46, 78));//северо-западный 55.784440, 37.467837
+            klaster.Add(new coord((float)66.2131, (float)73.7036));//центральный 55.737036, 37.662131
+            klaster.Add(new coord((float)56.5703, (float)81.4916));//Северный 55.814916, 37.565703
+            klaster.Add(new coord((float)63.3725, (float)77.6371));//северо-восточный 55.776371, 37.633725
+            klaster.Add(new coord((float)71.0262, (float)79.6901));//восточный 55.796901, 37.710262
+            klaster.Add(new coord((float)71.5454, (float)75.4081));//юго-восточный 55.754081, 37.715454
+            klaster.Add(new coord((float)66.5580, (float)71.0246));//южный 55.710246, 37.665580
+            klaster.Add(new coord((float)57.8244, (float)66.2382));//юго-западный 55.662382, 37.578244
+            klaster.Add(new coord((float)44.3237, (float)72.7203));//западный 55.727203, 37.443237
+            klaster.Add(new coord((float)46.7837, (float)78.4440));//северо-западный 55.784440, 37.467837
+            klaster.Add(new coord((float)21.5344, (float)99.0531));//зеленоградский 55.990531, 37.215344
             for (int i = 0; i < klaster.Count; i++)
             {
                     g.DrawRectangle(Pens.Black, Enlargement * klaster[i].X+bias_horizon, Enlargement * klaster[i].Y+bias_vertical, width_height, width_height);
             }
-            klasterNew = main(klaster,X,Y);
+            klasterNew = main(klaster,XGlobal,YGlobal);
             for (int i = 0; i < klaster.Count; i++)
             {
                 if (klasterNew[i].Equals(new coord(float.NaN,float.NaN)))
@@ -154,14 +173,40 @@ namespace lastlaba
                 {
                     if (klasterNew[i].Equals(new coord(float.NaN, float.NaN)))
                     {
-                        g.DrawLine(new Pen(Brushes.Red, 1), new PointF(Enlargement * klaster[i].X+5+bias_horizon, Enlargement * klaster[i].Y+5+bias_vertical), new PointF(Enlargement * X[countsGlobal[i][j]]+5+bias_horizon, Enlargement * Y[countsGlobal[i][j]]+5+bias_vertical));
+                        g.DrawLine(new Pen(Brushes.Red, 1), new PointF(Enlargement * klaster[i].X+5+bias_horizon, Enlargement * klaster[i].Y+5+bias_vertical), new PointF(Enlargement * XGlobal[countsGlobal[i][j]]+5+bias_horizon, Enlargement * YGlobal[countsGlobal[i][j]]+5+bias_vertical));
                     }
                     else
                     {
-                       g.DrawLine(new Pen(Brushes.Red, 1), new PointF(Enlargement * klasterNew[i].X+5 + bias_horizon, Enlargement * klasterNew[i].Y+5 + bias_vertical), new PointF(Enlargement * X[countsGlobal[i][j]]+5 + bias_horizon, Enlargement * Y[countsGlobal[i][j]]+5 + bias_vertical));
+                       g.DrawLine(new Pen(Brushes.Red, 1), new PointF(Enlargement * klasterNew[i].X+5 + bias_horizon, Enlargement * klasterNew[i].Y+5 + bias_vertical), new PointF(Enlargement * XGlobal[countsGlobal[i][j]]+5 + bias_horizon, Enlargement * YGlobal[countsGlobal[i][j]]+5 + bias_vertical));
                     }
                        
                 }
+            }
+            string[] okrugDef = { "Центральный административный округ",  //центральный 55.737036, 37.662131
+                "Северный административный округ",                       //Северный 55.814916, 37.565703
+                "Северо-Восточный административный округ",               //северо-восточный 55.776371, 37.633725
+                "Восточный административный округ",                      //восточный 55.796901, 37.710262
+                "Юго-Восточный административный округ",                   //юго-восточный 55.754081, 37.715454
+                "Южный административный округ",                          //южный 55.710246, 37.665580
+                "Юго-Западный административный округ",                  //юго-западный 55.662382, 37.578244
+                "Западный административный округ",                       //западный 55.727203, 37.443237
+                "Северо-Западный административный округ",                //северо-западный 55.784440, 37.467837
+                "Зеленоградский административный округ" };              //зеленоградский 55.990531, 37.215344
+            Chance_of_hitting = 0;
+            error = new float[okrugDef.Count()];
+            float ch_error = 0 ;
+            for (int j = 0; j < okrugDef.Count(); j++)
+            {
+                for (int i = 0; i < countsGlobal[j].Count(); i++)
+                {
+                    if (okrug[countsGlobal[j][i]] == okrugDef[j])
+                    {
+                        Chance_of_hitting++;
+                        ch_error++;
+                    }
+                }
+                error[j] = (ch_error / countsGlobal[j].Count)*100;
+                ch_error = 0;
             }
             button1.Enabled = false;
             button10.Enabled = true;
@@ -319,12 +364,18 @@ namespace lastlaba
 
         private void button10_Click(object sender, EventArgs e)
         {
-            string output="";
-            string[] okrug = { "Центральный", "Северный", "Северо-восточный", "Восточный", "Юго-западный", "Южный", "Юго-западный", "Западный", "Северо-западный" };
+            string[] okrug = { "Центральный административный округ", "Северный административный округ", "Северо-Восточный административный округ", "Восточный административный округ", "Юго-Западный административный округ", "Южный административный округ", "Юго-Восточный административный округ", "Западный административный округ", "Северо-Западный административный округ", "Зеленоградский административный округ" };
+
+            float result = (Chance_of_hitting / XGlobal.Count())*100;
+            string output= result+"% общее попадание \n";
+            for(int i = 0; i < error.Count(); i++)
+            {
+                output = output + error[i] + "% "+ okrug[i] +" \n";
+            }
                 {
-                    for (int i = 0; i < countsGlobal.Count; i++)
+                    for (int i = 0; i < okrug.Count(); i++)
                     {
-                        output=output + "округ "+okrug[i]+"\n";
+                        output=output +okrug[i]+"\n";
                         for (int j = 0; j < countsGlobal[i].Count; j++)
                         {
                             if (klasterNew[i].Equals(new coord(float.NaN, float.NaN)))
@@ -333,7 +384,7 @@ namespace lastlaba
                             }
                             else
                             {
-                                output = output +"|"+ (j+1) + ") X = 37." + XGlobal[countsGlobal[i][j]] + " Y = 55." + YGlobal[countsGlobal[i][j]]+" ";        
+                                output = output +"|"+ (j+1) + ") X = 37." + 100000*XGlobal[countsGlobal[i][j]] + " Y = 55." + 100000*YGlobal[countsGlobal[i][j]]+" ";        
                             }
                         }
                     output = output + "\n";
